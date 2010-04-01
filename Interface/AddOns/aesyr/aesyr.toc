@@ -1,0 +1,9 @@
+## Interface: 30300
+## Author: Marian "fyrn" Rudzynski
+## Version: 1.0
+## Title: Aesyr TukUI
+## Notes: Aesyr Theme/Modification of the default TukUI
+## RequiredDeps: Tukui
+## SavedVariables:
+
+aesyr.lua

@@ -88,7 +88,7 @@ TukuiDB["arena"] = {
 }
 
 TukuiDB["actionbar"] = {
-	["enable"] = true, -- enable tukz action bars
+	["enable"] = false, -- enable tukz action bars
 	["hotkey"] = false, -- enable hotkey display because it was a lot requested
 	["rightbarmouseover"] = false, -- enable right bars on mouse over
 	["shapeshiftmouseover"] = false, -- enable shapeshift or totembar on mouseover
