@@ -375,7 +375,7 @@ AchievementMicroButton_Update = function() end
 ------------------------------------------------------------------------
 
 SLASH_GM1 = "/gm"
-SlashCmdList["GM"] = GM
+SlashCmdList["GM"] = function() ToggleHelpFrame() end
 SlashCmdList.DISABLE_ADDON = function(s) DisableAddOn(s) ReloadUI() end
 SLASH_DISABLE_ADDON1 = "/disable"
 SlashCmdList.ENABLE_ADDON = function(s) EnableAddOn(s) LoadAddOn(s) ReloadUI() end

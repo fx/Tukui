@@ -1,6 +1,6 @@
 if not TukuiDB["combatfont"].enable == true then return end
 
-local fontName = TukuiDB.media.dmgfont
+local fontName = TukuiDB["media"].dmgfont
 local fontHeight = 40 -- this setting increase font quality
 
 local function FS_SetFont()
