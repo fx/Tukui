@@ -171,7 +171,7 @@ TukuiDB["merchant"] = {
 }
 
 TukuiDB["error"] = {
-	["enable"] = true, -- true to enable this mod, false to disable
+	["enable"] = false, -- true to enable this mod, false to disable
 	filter = { -- what messages to not hide
 		["Inventory is full."] = true, -- inventory is full will not be hidden by default
 	},
