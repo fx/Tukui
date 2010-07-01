@@ -18,7 +18,7 @@ local ST_SOULBAG = 2
 local ST_SPECIAL = 3
 local ST_QUIVER = 4
 local bag_bars = 0
-local hide_soulbag = 1
+local hide_soulbag = 0
 local quest_glow = 1
 
 Stuffing = CreateFrame ("Frame", nil, UIParent)
@@ -421,9 +421,9 @@ function Stuffing:CreateBagFrame(w)
 	f:SetFrameLevel(20)
 
 	if w == "Bank" then
-		f:SetPoint("BOTTOMLEFT", InfoLeft, "TOPLEFT", 0, TukuiDB:Scale(5))
+		f:SetPoint("BOTTOMLEFT", TukuiInfoLeft, "TOPLEFT", 0, TukuiDB:Scale(5))
 	else
-		f:SetPoint("BOTTOMRIGHT", InfoRight, "TOPRIGHT", 0, TukuiDB:Scale(5))
+		f:SetPoint("BOTTOMRIGHT", TukuiInfoRight, "TOPRIGHT", 0, TukuiDB:Scale(5))
 	end
 	
 	-- close button
@@ -1214,7 +1214,7 @@ function Stuffing:SortBags()
 
 				dbag = bs[st_idx]
 
-				if Stuffing:BagType(dbag) == ST_NORMAL or dbag > 4 then
+				if Stuffing:BagType(dbag) == ST_NORMAL or Stuffing:BagType(dbag) == ST_SPECIAL or dbag > 4 then
 					break
 				end
 			end

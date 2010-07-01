@@ -1,4 +1,6 @@
-
+----------------------------------------------------------------------------
+-- General Config
+----------------------------------------------------------------------------
 
 TukuiDB["general"] = {
 	["autoscale"] = true, -- mainly enabled for users that don't want to mess with the config file
@@ -24,7 +26,7 @@ TukuiDB["media"] = {
 
 TukuiDB["unitframes"] = {
 	-- general options
-	["enable"] = true, -- -- can i really need to explain this?
+	["enable"] = true, -- do i really need to explain this?
 	["unitcastbar"] = true, -- enable tukui castbar
 	["cblatency"] = false, -- enable castbar latency
 	["cbicons"] = true, -- enable icons on castbar
@@ -43,12 +45,13 @@ TukuiDB["unitframes"] = {
 	["showtotalhpmp"] = false, -- change the display of info text on player and target with XXXX/Total.
 	["showsmooth"] = true, -- enable smooth bar
 	["showthreat"] = true, -- enable the threat bar anchored to info left panel.
-	["charportrait"] = false, -- can i really need to explain this?
+	["charportrait"] = false, -- do i really need to explain this?
 	["t_mt"] = false, -- enable maintank and mainassist
 	["t_mt_power"] = false, -- enable power bar on maintank and mainassist because it's not show by default.
 	["combatfeedback"] = true, -- enable combattext on player and target.
 	["classcolor"] = true, -- if set to false, use foof color theme. 
 	["playeraggro"] = false, -- glow border of player frame change color according to your current aggro.
+	["positionbychar"] = false, -- save X, Y position with /uf (movable frame) per character instead of per account.
 
 	-- raid layout
 	["showrange"] = true, -- show range opacity on raidframes
@@ -69,7 +72,6 @@ TukuiDB["unitframes"] = {
 	["ws_show_time"] = false, -- show time on weakened soul bar
 	["ws_show_player"] = true, -- show weakened soul bar on player unit
 	["ws_show_target"] = true, -- show weakened soul bar on target unit
-	["if_warning"] = true, -- show innerfire warning when in combat and not active.
 	
 	-- death knight only plugin
 	["runebar"] = true, -- enable tukui runebar plugin
@@ -84,7 +86,7 @@ TukuiDB["unitframes"] = {
 
 TukuiDB["arena"] = {
 	["unitframes"] = true, -- enable tukz arena unitframes (requirement : tukui unitframes enabled)
-	["spelltracker"] = true, -- enable tukz enemy spell tracker	
+	["spelltracker"] = true, -- enable tukz enemy spell tracker (an afflicted3 or interruptbar alternative)
 }
 
 TukuiDB["actionbar"] = {
@@ -95,6 +97,7 @@ TukuiDB["actionbar"] = {
 	["hideshapeshift"] = false, -- hide shapeshift or totembar because it was a lot requested.
 	["bottomrows"] = 1, -- numbers of row you want to show at the bottom (select between 1 and 2 only)
 	["rightbars"] = 0, -- numbers of right bar you want
+	["showgrid"] = true, -- show grid on empty button
 }
 
 TukuiDB["nameplate"] = {
@@ -112,10 +115,11 @@ TukuiDB["map"] = {
 TukuiDB["loot"] = {
 	["lootframe"] = true, -- reskin the loot frame to fit tukui
 	["rolllootframe"] = true, -- reskin the roll frame to fit tukui
+	["autogreed"] = true, -- auto-dez or auto-greed item at max level.
 }
 
 TukuiDB["cooldown"] = {
-	["enable"] = true, -- can i really need to explain this?
+	["enable"] = true, -- do i really need to explain this?
 	["treshold"] = 8, -- show decimal under X seconds and text turn red
 }
 
@@ -148,7 +152,6 @@ TukuiDB["chat"] = {
 	["enable"] = true, -- blah
 	["font"] = [[fonts\ARIALN.ttf]], -- font for chat
 	["fontsize"] = 12, -- font size for chat
-	["chattime"] = false, -- enable chat time on chat
 }
 
 TukuiDB["panels"] = { 
@@ -158,6 +161,9 @@ TukuiDB["panels"] = {
 TukuiDB["tooltip"] = {
 	["enable"] = true, -- true to enable this mod, false to disable
 	["cursor"] = false, -- enable units tooltip on cursor
+	["hidecombat"] = false, -- hide bottom-right tooltip when in combat
+	["hidebuttons"] = false, -- always hide action bar buttons tooltip.
+	["hideuf"] = false, -- hide tooltip on unitframes
 }
 
 TukuiDB["combatfont"] = {
@@ -181,25 +187,29 @@ TukuiDB["invite"] = {
 	["autoaccept"] = true, -- auto-accept invite from guildmate and friends.
 }
 
-TukuiDB["combo"] = { 
-	["enable"] = true, -- enable middle screen combo text pts.
-}
-
 TukuiDB["watchframe"] = { 
 	["movable"] = true, -- disable this if you run "Who Framed Watcher Wabbit" from seerah.
 }
 
--- an example if you want multiple config
-if TukuiDB.myname == "Tùkz" or TukuiDB.myname == "Tukz" then
-	TukuiDB["focus"] = { 
-		["enable"] = true, -- enable mouseover focus key
-		["arenamodifier"] = "shift", -- modifier to use
-		["arenamouseButton"] = "3", -- mouse button to use
-	}
-else
-	TukuiDB["focus"] = { 
-		["enable"] = false, -- enable mouseover focus key
-		["arenamodifier"] = "shift", -- modifier to use
-		["arenamouseButton"] = "3", -- mouse button to use
-	}
+TukuiDB["buffreminder"] = {
+	["enable"] = false, -- this is now the new innerfire warning script for all armor/aspect class.
+	["sound"] = true, -- enable warning sound notification for reminder.
+}
+
+----------------------------------------------------------------------------
+-- Per Class Config (overwrite general)
+-- Class need to be UPPERCASE
+----------------------------------------------------------------------------
+
+if TukuiDB.myclass == "PRIEST" then
+	-- do some config!
+end
+
+----------------------------------------------------------------------------
+-- Per Character Name Config (overwrite general and class)
+-- Name need to be case sensitive
+----------------------------------------------------------------------------
+
+if TukuiDB.myname == "Tukz" then
+	TukuiDB["buffreminder"].enable = true
 end

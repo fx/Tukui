@@ -31,7 +31,6 @@ if not TukuiDB["unitframes"].enable == true or not TukuiDB.lowversion == true th
 ------------------------------------------------------------------------
 --	Textures and Medias
 ------------------------------------------------------------------------
-
 local floor = math.floor
 local format = string.format
 
@@ -45,7 +44,7 @@ local backdrop = {
 }
 
 local font = TukuiDB["media"].uffont
-local font2 = [=[Fonts\ARIALN.ttf]=]
+local font2 = TukuiDB["media"].font
 local _, class = UnitClass("player")
 
 ------------------------------------------------------------------------
@@ -419,7 +418,11 @@ local Createauratimer = function(self,elapsed)
 			if self.timeLeft > 0 then
 				local time = FormatTime(self.timeLeft)
 				self.remaining:SetText(time)
-				self.remaining:SetTextColor(0.84, 0.75, 0.65)
+				if self.timeLeft < 5 then
+					self.remaining:SetTextColor(0.69, 0.31, 0.31)
+				else
+					self.remaining:SetTextColor(0.84, 0.75, 0.65)
+				end
 			else
 				self.remaining:Hide()
 				self:SetScript("OnUpdate", nil)
@@ -443,7 +446,7 @@ local function createAura(self, button, icons)
 	
 	button.cd.noOCC = true		 	-- hide OmniCC CDs
 	button.cd.noCooldownCount = true	-- hide CDC CDs
-	button.count:SetFont(TukuiDB["media"].pixelfont, TukuiDB:Scale(10), "THINOUTLINE")
+	button.count:SetFont(TukuiDB["media"].font, TukuiDB:Scale(10), "THINOUTLINE")
 	button.count:ClearAllPoints()
 	button.count:SetPoint("BOTTOMRIGHT", 0, 2)
 	TukuiDB:SetTemplate(button)
@@ -598,6 +601,7 @@ local SetStyle = function(self, unit)
 	self.Health:SetPoint("TOPLEFT")
 	self.Health:SetPoint("TOPRIGHT")
 	self.Health:SetStatusBarTexture(normTex)
+	self.Health:GetStatusBarTexture():SetHorizTile(false)
 
 	self.Health.colorTapping = true
 	self.Health.colorDisconnected = true
@@ -873,11 +877,12 @@ local SetStyle = function(self, unit)
 	
 	if (TukuiDB["unitframes"].showthreat == true) then
 	   if (unit == "player") then 
-			self.ThreatBar = CreateFrame("StatusBar", self:GetName()..'_ThreatBar', InfoLeft)
-			self.ThreatBar:SetPoint("TOPLEFT", InfoLeft, TukuiDB:Scale(2), TukuiDB:Scale(-2))
-			self.ThreatBar:SetPoint("BOTTOMRIGHT", InfoLeft, TukuiDB:Scale(-2), TukuiDB:Scale(2))
+			self.ThreatBar = CreateFrame("StatusBar", self:GetName()..'_ThreatBar', TukuiInfoLeft)
+			self.ThreatBar:SetPoint("TOPLEFT", TukuiInfoLeft, TukuiDB:Scale(2), TukuiDB:Scale(-2))
+			self.ThreatBar:SetPoint("BOTTOMRIGHT", TukuiInfoLeft, TukuiDB:Scale(-2), TukuiDB:Scale(2))
 		  
-			self.ThreatBar:SetStatusBarTexture(TukuiDB["media"].blank) -- temp fix for texture resetting
+			self.ThreatBar:SetStatusBarTexture(normTex)
+			self.ThreatBar:GetStatusBarTexture():SetHorizTile(false)
 			self.ThreatBar:SetBackdrop(backdrop)
 			self.ThreatBar:SetBackdropColor(0, 0, 0, 0)
 	   
@@ -1040,7 +1045,7 @@ local SetStyle = function(self, unit)
 			if (unit == "player" or unit == "target") and (TukuiDB["unitframes"].charportrait == true) then
 				self.Portrait = CreateFrame("PlayerModel", nil, self)
 				self.Portrait:SetFrameLevel(8)
-				self.Portrait:SetHeight(57)
+				self.Portrait:SetHeight(51)
 				self.Portrait:SetWidth(33)
 				self.Portrait:SetAlpha(1)
 				if unit == "player" then
@@ -1280,11 +1285,8 @@ local SetStyle = function(self, unit)
 		self:SetAttribute("initial-width", TukuiDB:Scale(186))
         self.Power:Hide()        
 	elseif unit == "focus" then
-		self:SetAttribute("initial-height", InfoRight:GetHeight() - TukuiDB:Scale(4))
-		self:SetAttribute("initial-width", InfoRight:GetWidth() - TukuiDB:Scale(4))
-		self.Health:SetStatusBarTexture(TukuiDB["media"].blank) -- temp fix for texture
-		self.Health:SetAlpha(0.7)
-		self.Health.bg.multiplier = 0.2
+		self:SetAttribute("initial-height", TukuiInfoRight:GetHeight() - TukuiDB:Scale(4))
+		self:SetAttribute("initial-width", TukuiInfoRight:GetWidth() - TukuiDB:Scale(4))
 		self.Power:Hide()
 	elseif unit == "pet" then
 		self:SetAttribute("initial-height", TukuiDB:Scale(18))
@@ -1376,11 +1378,11 @@ end
 oUF:RegisterStyle("Tukz", SetStyle)
 oUF:SetActiveStyle("Tukz")
 
-oUF:Spawn("player", "oUF_Tukz_player"):SetPoint("BOTTOMLEFT", ActionBarBackground, "TOPLEFT", 0,8+24)
-oUF:Spawn("target", "oUF_Tukz_target"):SetPoint("BOTTOMRIGHT", ActionBarBackground, "TOPRIGHT", 0,8+24)
-oUF:Spawn("pet", "oUF_Tukz_pet"):SetPoint("BOTTOMLEFT", ActionBarBackground, "TOPLEFT", 0,8)
-oUF:Spawn("focus", "oUF_Tukz_focus"):SetPoint("CENTER", InfoRight, "CENTER")
-oUF:Spawn("targettarget", "oUF_Tukz_targettarget"):SetPoint("BOTTOMRIGHT", ActionBarBackground, "TOPRIGHT", 0,8)
+oUF:Spawn("player", "oUF_Tukz_player"):SetPoint("BOTTOMLEFT", TukuiActionBarBackground, "TOPLEFT", 0,8+24)
+oUF:Spawn("target", "oUF_Tukz_target"):SetPoint("BOTTOMRIGHT", TukuiActionBarBackground, "TOPRIGHT", 0,8+24)
+oUF:Spawn("pet", "oUF_Tukz_pet"):SetPoint("BOTTOMLEFT", TukuiActionBarBackground, "TOPLEFT", 0,8)
+oUF:Spawn("focus", "oUF_Tukz_focus"):SetPoint("CENTER", TukuiInfoRight, "CENTER")
+oUF:Spawn("targettarget", "oUF_Tukz_targettarget"):SetPoint("BOTTOMRIGHT", TukuiActionBarBackground, "TOPRIGHT", 0,8)
 
 if TukuiDB["unitframes"].showfocustarget == true then oUF:Spawn("focustarget", "oUF_Tukz_focustarget"):SetPoint("BOTTOM", 0, 280) end
 
@@ -1424,14 +1426,16 @@ for i = 1,MAX_BOSS_FRAMES do
    _G["Boss"..i.."TargetFrame".."ManaBar"]:UnregisterAllEvents()
 end
 
-local boss = {}
-for i = 1, MAX_BOSS_FRAMES do
-   boss[i] = oUF:Spawn("boss"..i, "oUF_Boss"..i)
-   if i == 1 then
-      boss[i]:SetPoint("BOTTOM", UIParent, "BOTTOM", 252, 260)
-   else
-      boss[i]:SetPoint('BOTTOM', boss[i-1], 'TOP', 0, 10)             
-   end
+if not IsAddOnLoaded("DXE") then
+	local boss = {}
+	for i = 1, MAX_BOSS_FRAMES do
+	   boss[i] = oUF:Spawn("boss"..i, "oUF_Boss"..i)
+	   if i == 1 then
+		  boss[i]:SetPoint("BOTTOM", UIParent, "BOTTOM", 252, 260)
+	   else
+		  boss[i]:SetPoint('BOTTOM', boss[i-1], 'TOP', 0, 10)             
+	   end
+	end
 end
 
 --[[ testmode ]]
@@ -1440,7 +1444,7 @@ TestUI = function()
 	testui()
 	UnitAura = function()
 		-- name, rank, texture, count, dtype, duration, timeLeft, caster
-		return '????????? ????', 'Rank 2', 'Interface\\Icons\\Spell_Holy_Penance', random(5), 'Magic', 0, 0, "player"
+		return 'Penancelol', 'Rank 2', 'Interface\\Icons\\Spell_Holy_Penance', random(5), 'Magic', 0, 0, "player"
 	end
 	if(oUF) then
 		for i, v in pairs(oUF.units) do

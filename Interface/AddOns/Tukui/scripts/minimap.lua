@@ -1,9 +1,8 @@
-
 --------------------------------------------------------------------
 -- MINIMAP BORDER
 --------------------------------------------------------------------
 
-local p = CreateFrame("Frame", "MapBorder", Minimap)
+local p = CreateFrame("Frame", "TukuiMinimap", Minimap)
 TukuiDB:CreatePanel(p, 144, 144, "CENTER", Minimap, "CENTER", -0, 0)
 p:ClearAllPoints()
 p:SetPoint("TOPLEFT", TukuiDB:Scale(-2), TukuiDB:Scale(2))
@@ -41,7 +40,7 @@ MiniMapTracking:Hide()
 MiniMapMailFrame:ClearAllPoints()
 MiniMapMailFrame:SetPoint("TOPRIGHT", Minimap, TukuiDB:Scale(3), TukuiDB:Scale(4))
 MiniMapMailBorder:Hide()
-MiniMapMailIcon:SetTexture("Interface\\AddOns\\Tukui\\media\\mail")
+MiniMapMailIcon:SetTexture("Interface\\AddOns\\Tukui\\media\\textures\\mail")
 
 -- Move battleground icon
 MiniMapBattlefieldFrame:ClearAllPoints()
@@ -55,7 +54,7 @@ MiniMapInstanceDifficulty:ClearAllPoints()
 MiniMapInstanceDifficulty:SetParent(Minimap)
 MiniMapInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 0, 0)
 
-function UpdateLFG()
+local function UpdateLFG()
 	MiniMapLFGFrame:ClearAllPoints()
 	MiniMapLFGFrame:SetPoint("BOTTOMRIGHT", Minimap, "BOTTOMRIGHT", TukuiDB:Scale(2), TukuiDB:Scale(1))
 end
@@ -79,7 +78,7 @@ local menuList = {
     {text = CHARACTER_BUTTON,
     func = function() ToggleCharacter("PaperDollFrame") end},
     {text = SPELLBOOK_ABILITIES_BUTTON,
-    func = function() ToggleSpellBook("spell") end},
+    func = function() ToggleFrame(SpellBookFrame) end},
     {text = TALENTS_BUTTON,
     func = function() ToggleTalentFrame() end},
     {text = ACHIEVEMENT_BUTTON,
@@ -116,3 +115,6 @@ end)
 
 -- Set Square Map Mask
 Minimap:SetMaskTexture('Interface\\ChatFrame\\ChatFrameBackground')
+
+-- For others mods with a minimap button, set minimap buttons position in square mode.
+function GetMinimapShape() return 'SQUARE' end
