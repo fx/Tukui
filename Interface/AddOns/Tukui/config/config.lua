@@ -9,21 +9,6 @@ TukuiDB["general"] = {
 	["multisampleprotect"] = true, -- i don't recommend this because of shitty border but, voila!
 }
 
-TukuiDB["media"] = {
-	["font"] = [[Fonts\FRIZQT__.ttf]], -- general font of tukui
-	["uffont"] = [[Interface\AddOns\Tukui\media\uf_font.ttf]], -- general font of unitframes
-	["dmgfont"] = [[fonts\ARIALN.ttf]], -- general font of dmg / sct
-	["normTex"] = [[Interface\Addons\Tukui\media\normTex]], -- texture used for tukui healthbar/powerbar/etc
-	["glowTex"] = [[Interface\Addons\Tukui\media\glowTex]], -- the glow text around some frame.
-	["bubbleTex"] = [[Interface\Addons\Tukui\media\bubbleTex]], -- unitframes combo points
-	["blank"] = [[Interface\AddOns\Tukui\media\blank]], -- the main texture for all borders/panels
-	["bordercolor"] = { .6,.6,.6,1 }, -- border color of tukui panels
-	["altbordercolor"] = { .4,.4,.4,1 }, -- alternative border color, mainly for unitframes text panels.
-	["backdropcolor"] = { .1,.1,.1,1 }, -- background color of tukui panels
-	["pixelfont"] = [[fonts\ARIALN.ttf]], -- another general font 
-	["buttonhover"] = [[Interface\AddOns\Tukui\media\button_hover]],
-}
-
 TukuiDB["unitframes"] = {
 	-- general options
 	["enable"] = true, -- do i really need to explain this?
@@ -115,7 +100,7 @@ TukuiDB["map"] = {
 TukuiDB["loot"] = {
 	["lootframe"] = true, -- reskin the loot frame to fit tukui
 	["rolllootframe"] = true, -- reskin the roll frame to fit tukui
-	["autogreed"] = true, -- auto-dez or auto-greed item at max level.
+	["autogreed"] = false, -- auto-dez or auto-greed item at max level.
 }
 
 TukuiDB["cooldown"] = {
