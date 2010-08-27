@@ -1,0 +1,11 @@
+## Interface: 30300
+## Title: |cffC495DDTukui SharedMedia|r
+## Author: Telroth
+## RequiredDeps: Tukui
+## OptionalDeps: LibStub, LibSharedMedia-3.0
+
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+libs\LibSharedMedia-3.0\lib.xml
+
+core.lua

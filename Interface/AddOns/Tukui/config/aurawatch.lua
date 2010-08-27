@@ -16,7 +16,7 @@
 --------------------------------------------------------------------------------------------
 
 -- the spellIDs to track on screen in arena.
-if TukuiDB["arena"].spelltracker == true then
+if TukuiCF["arena"].spelltracker == true then
 	TukuiDB.spelltracker = {
 		[1766] = 10, -- kick
 		[6552] = 10, -- pummel
@@ -44,8 +44,7 @@ end
 -- New Aurawatch by Foof
 --------------------------------------------------------------------------------------------
 
-if TukuiDB["unitframes"].raidunitdebuffwatch == true then
-
+if TukuiCF["unitframes"].raidunitdebuffwatch == true then
 	-- Classbuffs { spell ID, position [, {r,g,b,a}][, anyUnit] }
 	TukuiDB.buffids = {
 		PRIEST = {
@@ -156,6 +155,6 @@ if TukuiDB["unitframes"].raidunitdebuffwatch == true then
 		-- Other debuff
 		6215, -- Fear
 		67479, -- Impale
-		552, -- test with abolish disease
+		-- 552, -- test with abolish disease
 	}
 end

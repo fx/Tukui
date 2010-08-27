@@ -2,7 +2,7 @@
 -- Auto accept invite
 ------------------------------------------------------------------------
 
-if TukuiDB["invite"].autoaccept == true then
+if TukuiCF["invite"].autoaccept == true then
 	local tAutoAcceptInvite = CreateFrame("Frame")
 	local OnEvent = function(self, event, ...) self[event](self, event, ...) end
 	tAutoAcceptInvite:SetScript("OnEvent", OnEvent)

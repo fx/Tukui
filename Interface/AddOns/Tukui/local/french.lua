@@ -1,4 +1,6 @@
 if TukuiDB.client == "frFR" then
+	tukuilocal.disband = "Dissoudre le groupe"
+
 	tukuilocal.datatext_guild = "Guilde"
 	tukuilocal.datatext_noguild = "Pas de Guilde"
 	tukuilocal.datatext_bags = "Sacs: "
@@ -11,8 +13,6 @@ if TukuiDB.client == "frFR" then
 	tukuilocal.datatext_profit = "Profit:"
 	tukuilocal.datatext_wg = "Prochain Joug-D'hiver:"
 	tukuilocal.datatext_friendlist = "Liste d'amis:"
-	tukuilocal.datatext_inprogress = "En cours"
-	tukuilocal.datatext_unavailable = "Indisponible"
 	tukuilocal.datatext_playersp = "sp"
 	tukuilocal.datatext_playerap = "ap"
 	tukuilocal.datatext_playerhaste = "hâte"
@@ -62,6 +62,7 @@ if TukuiDB.client == "frFR" then
 	tukuilocal.datatext_demolishersdestroyed = "Démolisseurs Détruits:"
 	tukuilocal.datatext_gatesdestroyed = "Portes Détruites:"
 	tukuilocal.datatext_totalmemusage = "Utilisation Totale de la Mémoire:"
+	tukuilocal.datatext_control = "Controllé par:"
 
 	tukuilocal.Slots = {
 	  [1] = {1, "Tête", 1000},
@@ -78,7 +79,7 @@ if TukuiDB.client == "frFR" then
 	}
 
 	tukuilocal.popup_disableui = "Tukui ne fonctionne pas avec cette résolution, voulez-vous désactiver Tukui? (Annuler si vous souhaitez essayer une autre résolution)"
-	tukuilocal.popup_install = "Première fois sur Tukui V10.30+ avec ce personnage. Vous devez recharger l'interface utilisateur afin de configurer les barres d'action, les variables et les cadres de Chat."
+	tukuilocal.popup_install = "Première fois sur Tukui V11 avec ce personnage. Vous devez recharger l'interface utilisateur afin de configurer les barres d'action, les variables et les cadres de Chat."
 	tukuilocal.popup_2raidactive = "2 modèles de raid sont activés, merci d'en choisir un."
 
 	tukuilocal.merchant_repairnomoney = "Vous n'avez pas assez d'argent pour réparer!"
@@ -97,17 +98,14 @@ if TukuiDB.client == "frFR" then
 	tukuilocal.unitframes_ouf_lowmana = "MANA FAIBLE"
 	tukuilocal.unitframes_ouf_threattext = "Menace sur la cible actuelle:"
 	tukuilocal.unitframes_ouf_offlinedps = "Hors ligne"
-	tukuilocal.unitframes_ouf_deaddps = "Mort"
+	tukuilocal.unitframes_ouf_deaddps = "|cffff0000[MORT]|r"
 	tukuilocal.unitframes_ouf_ghostheal = "FANTOME"
 	tukuilocal.unitframes_ouf_deadheal = "MORT"
 	tukuilocal.unitframes_ouf_gohawk = "GO FAUCON"
 	tukuilocal.unitframes_ouf_goviper = "GO VIPÈRE"
 	tukuilocal.unitframes_disconnected = "Déco"
 
-	tukuilocal.tooltip_targetyou = "|cffff4444>>VOUS CIBLE<<|r"
-
-	tukuilocal.priest_wsdebuff = "Ame affaiblie"
-	tukuilocal.priest_ifbuff = "Feu Intérieur"
+	tukuilocal.tooltip_count = "Count"
 
 	tukuilocal.bags_noslots = "Vous ne pouvez pas acheter plus de place!"
 	tukuilocal.bags_costs = "Prix: %.2f or"
@@ -126,24 +124,11 @@ if TukuiDB.client == "frFR" then
 	tukuilocal.bags_nothingsort= "Rien à trier."
 	tukuilocal.bags_bids = "Emplacements utilisés: "
 	tukuilocal.bags_stackend = "Empilage terminé."
+	tukuilocal.bags_rightclick_search = "Click-droit pour rechercher."
 
 	tukuilocal.chat_invalidtarget = "Cible non valide"
 
 	tukuilocal.mount_wintergrasp = "Joug-d'hiver"
-
-	tukuilocal.playermenu_freeforall = "Butin libre"
-	tukuilocal.playermenu_group = "|cff1eff00Butin de groupe|r"
-	tukuilocal.playermenu_master = "|cff0070ddMaître du butin|r"
-	tukuilocal.playermenu_global_needbeforegreed = "Butin: %sBesoin avant cupidité|r"
-	tukuilocal.playermenu_global_freeforall = "Butin: %sButin libre|r"
-	tukuilocal.playermenu_global_group = "Butin: %sButin de groupe|r"
-	tukuilocal.playermenu_global_master = "Butin: %sMaître du butin|r"
-	tukuilocal.playermenu_normal = "5 |cffffff50Normal|r"
-	tukuilocal.playermenu_heroic = "5 |cffff5050Heroïque|r"
-	tukuilocal.playermenu_raid10 = "10 |cffffff50Normal|r"
-	tukuilocal.playermenu_raid25 = "25 |cffffff50Normal|r"
-	tukuilocal.playermenu_raid10h = "10 |cffff5050Heroïque|r"
-	tukuilocal.playermenu_raid25h = "25 |cffff5050Heroïque|r"
 
 	tukuilocal.core_autoinv_enable = "Invitation automatique: invite"
 	tukuilocal.core_autoinv_enable_c = "Invitation automatique activée: "

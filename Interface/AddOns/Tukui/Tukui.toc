@@ -1,12 +1,13 @@
-## Interface: 30300
+﻿## Interface: 30300
 ## Author: Tukz
-## Version: 10.52
+## Credits to: Caith, Caellian, Shestak, Haste, Tekkub, Alza, Roth, P3lim, Tulla, Hungtar, hankthetank, Ishtara and others...
+## Special Thanks to: Admins, Moderator and VIP's from tukui.org
+## Version: 11.25
 ## Title: |cffC495DDTukui|r
 ## Notes: UI of awesomeness!
 ## SavedVariables: TukuiData, TukuiArena
-## SavedVariablesPerCharacter: TukuiInstallv1030, TukuiUFpos
+## SavedVariablesPerCharacter: TukuiInstallv1100, TukuiUFpos
+## OptionalDeps: Tukui_ConfigUI
 ## X-oUF: oUF
 
-libs\oUF\oUF.xml
 Tukui.xml
-

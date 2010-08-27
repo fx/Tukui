@@ -1,6 +1,3 @@
--- disable micro button update
-AchievementMicroButton_Update = TukuiDB.dummy
-
 -- always show worldstate behind buffs
 WorldStateAlwaysUpFrame:SetFrameStrata("BACKGROUND")
 WorldStateAlwaysUpFrame:SetFrameLevel(0)
@@ -8,6 +5,9 @@ WorldStateAlwaysUpFrame:SetFrameLevel(0)
 -- remove uiscale option via blizzard option, users need to set this in the config file
 VideoOptionsResolutionPanelUIScaleSlider:Hide()
 VideoOptionsResolutionPanelUseUIScale:Hide()
+
+-- tutorial button shit
+TukuiDB.Kill(TutorialFrameAlertButton)
 
 -- enable or disable an addon via command
 SlashCmdList.DISABLE_ADDON = function(s) DisableAddOn(s) ReloadUI() end
@@ -40,12 +40,41 @@ end
 SLASH_CLFIX1 = "/clfix"
 SlashCmdList["CLFIX"] = CLFIX
 
--- a command to show frame you currently mouseover
-local function FRAME()
-	ChatFrame1:AddMessage(GetMouseFocus():GetName()) 
-end
+-- a command to show frame you currently have mouseovered
 SLASH_FRAME1 = "/frame"
-SlashCmdList["FRAME"] = FRAME
+SlashCmdList["FRAME"] = function(arg)
+	if arg ~= "" then
+		arg = _G[arg]
+	else
+		arg = GetMouseFocus()
+	end
+	if arg ~= nil and arg:GetName() ~= nil then
+		local point, relativeTo, relativePoint, xOfs, yOfs = arg:GetPoint()
+		ChatFrame1:AddMessage("|cffCC0000~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+		ChatFrame1:AddMessage("Name: |cffFFD100"..arg:GetName())
+		if arg:GetParent() then
+			ChatFrame1:AddMessage("Parent: |cffFFD100"..arg:GetParent():GetName())
+		end
+ 
+		ChatFrame1:AddMessage("Width: |cffFFD100"..format("%.2f",arg:GetWidth()))
+		ChatFrame1:AddMessage("Height: |cffFFD100"..format("%.2f",arg:GetHeight()))
+ 
+		if x then
+			ChatFrame1:AddMessage("X: |cffFFD100"..format("%.2f",xOfs))
+		end
+		if y then
+			ChatFrame1:AddMessage("Y: |cffFFD100"..format("%.2f",yOfs))
+		end
+		if relativeTo then
+			ChatFrame1:AddMessage("Point: |cffFFD100"..point.."|r anchored to "..relativeTo:GetName().."'s |cffFFD100"..relativePoint)
+		end
+		ChatFrame1:AddMessage("|cffCC0000~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+	elseif arg == nil then
+		ChatFrame1:AddMessage("Invalid frame name")
+	else
+		ChatFrame1:AddMessage("Could not find frame info")
+	end
+end
 
 -- enable lua error by command
 function SlashCmdList.LUAERROR(msg, editbox)
@@ -60,3 +89,23 @@ function SlashCmdList.LUAERROR(msg, editbox)
 	end
 end
 SLASH_LUAERROR1 = '/luaerror'
+
+SlashCmdList["GROUPDISBAND"] = function()
+		SendChatMessage(tukuilocal.disband, "RAID" or "PARTY")
+		if UnitInRaid("player") then
+			for i = 1, GetNumRaidMembers() do
+				local name, _, _, _, _, _, _, online = GetRaidRosterInfo(i)
+				if online and name ~= TukuiDB.myname then
+					UninviteUnit(name)
+				end
+			end
+		else
+			for i = MAX_PARTY_MEMBERS, 1, -1 do
+				if GetPartyMember(i) then
+					UninviteUnit(UnitName("party"..i))
+				end
+			end
+		end
+		LeaveParty()
+end
+SLASH_GROUPDISBAND1 = '/rd'

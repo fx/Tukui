@@ -2,16 +2,16 @@
 -- prevent action bar users config errors
 ------------------------------------------------------------------------
 
-if TukuiDB["actionbar"].bottomrows == 0 or TukuiDB["actionbar"].bottomrows > 2 then
-	TukuiDB["actionbar"].bottomrows = 1
+if TukuiCF["actionbar"].bottomrows == 0 or TukuiCF["actionbar"].bottomrows > 2 then
+	TukuiCF["actionbar"].bottomrows = 1
 end
 
-if TukuiDB["actionbar"].rightbars > 3 then
-	TukuiDB["actionbar"].rightbars = 3
+if TukuiCF["actionbar"].rightbars > 3 then
+	TukuiCF["actionbar"].rightbars = 3
 end
 
-if not TukuiDB.lowversion and TukuiDB["actionbar"].bottomrows == 2 and TukuiDB["actionbar"].rightbars > 1 then
-	TukuiDB["actionbar"].rightbars = 1
+if TukuiCF["actionbar"].bottomrows == 2 and TukuiCF["actionbar"].rightbars > 1 and not TukuiDB.lowversion then
+	TukuiCF["actionbar"].rightbars = 1
 end
 
 ------------------------------------------------------------------------
@@ -19,7 +19,11 @@ end
 ------------------------------------------------------------------------
 
 if TukuiDB.client == "ruRU" then
-	TukuiDB["media"].uffont = [[fonts\ARIALN.ttf]]
+	TukuiCF["media"].uffont = [[fonts\ARIALN.ttf]]
+elseif TukuiDB.client == "zhTW" or TukuiDB.client == "zhCN" then
+	TukuiCF["media"].uffont = [[fonts\bLEI00D.ttf]]
+	TukuiCF["media"].font = [[fonts\bLEI00D.ttf]]
+	TukuiCF["media"].dmgfont = [[fonts\bLEI00D.ttf]]
 end
 
 ------------------------------------------------------------------------
@@ -30,25 +34,33 @@ end
 -- adding an auto disable if some mods are loaded
 
 if (IsAddOnLoaded("Stuf") or IsAddOnLoaded("PitBull4") or IsAddOnLoaded("ShadowedUnitFrames") or IsAddOnLoaded("ag_UnitFrames")) then
-	TukuiDB["unitframes"].enable = false
+	TukuiCF["unitframes"].enable = false
 end
 
 if (IsAddOnLoaded("TidyPlates") or IsAddOnLoaded("Aloft")) then
-	TukuiDB["nameplate"].enable = false
+	TukuiCF["nameplate"].enable = false
 end
 
 if (IsAddOnLoaded("Dominos") or IsAddOnLoaded("Bartender4") or IsAddOnLoaded("Macaroon")) then
-	TukuiDB["actionbar"].enable = false
+	TukuiCF["actionbar"].enable = false
 end
 
 if (IsAddOnLoaded("Mapster")) then
-	TukuiDB["map"].enable = false
+	TukuiCF["map"].enable = false
+end
+
+if (IsAddOnLoaded("Prat") or IsAddOnLoaded("Chatter")) then
+	TukuiCF["chat"].enable = false
 end
 
 if (IsAddOnLoaded("Quartz") or IsAddOnLoaded("AzCastBar") or IsAddOnLoaded("eCastingBar")) then
-	TukuiDB["unitframes"].unitcastbar = false
+	TukuiCF["unitframes"].unitcastbar = false
 end
 
 if (IsAddOnLoaded("Afflicted3") or IsAddOnLoaded("InterruptBar")) then
-	TukuiDB["arena"].spelltracker = false
+	TukuiCF["arena"].spelltracker = false
+end
+
+if (IsAddOnLoaded("TipTac")) then
+	TukuiCF["tooltip"].enable = false
 end

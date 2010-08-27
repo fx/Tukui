@@ -1,245 +1,278 @@
-local db = TukuiDB["tooltip"]
+-- credits : Aezay (TipTac) and Caellian for some parts of code.
+
+local db = TukuiCF["tooltip"]
 if not db.enable then return end
 
--- Texture tooltips
-local tooltips = {
-	GameTooltip,
-	ItemRefTooltip,
-	ShoppingTooltip1,
-	ShoppingTooltip2,
-	ShoppingTooltip3,
-	DropDownList1MenuBackdrop,
-	DropDownList2MenuBackdrop,
-	WorldMapTooltip,
-	BNToastFrame.tooltip,
-	FriendsTooltip
+local TukuiTooltip = CreateFrame("Frame", nil, UIParent)
+
+local _G = getfenv(0)
+
+local GameTooltip, GameTooltipStatusBar = _G["GameTooltip"], _G["GameTooltipStatusBar"]
+
+local gsub, find, format = string.gsub, string.find, string.format
+
+local Tooltips = {GameTooltip,ItemRefTooltip,ShoppingTooltip1,ShoppingTooltip2,ShoppingTooltip3,WorldMapTooltip}
+
+local linkTypes = {item = true, enchant = true, spell = true, quest = true, unit = true, talent = true, achievement = true, glyph = true}
+
+local classification = {
+	worldboss = "|cffAF5050Boss|r",
+	rareelite = "|cffAF5050+ Rare|r",
+	elite = "|cffAF5050+|r",
+	rare = "|cffAF5050Rare|r",
 }
 
-for _, tt in pairs(tooltips) do
-	TukuiDB:SetTemplate(tt)
-	tt:HookScript("OnShow", function(self)
-		self:SetBackdropColor(unpack(TukuiDB["media"].backdropcolor))
-		self:SetBackdropBorderColor(unpack(TukuiDB["media"].bordercolor))
-	end)
-end
+local NeedBackdropBorderRefresh = false
 
--- Hide PVP text
-PVP_ENABLED = ""
-
--- Statusbar
-GameTooltipStatusBar:SetStatusBarTexture(TukuiDB["media"].normTex)
-GameTooltipStatusBar:SetHeight(TukuiDB:Scale(5))
-GameTooltipStatusBar:ClearAllPoints()
-GameTooltipStatusBar:SetPoint("BOTTOMLEFT", GameTooltip, "TOPLEFT", TukuiDB:Scale(2), TukuiDB:Scale(5))
-GameTooltipStatusBar:SetPoint("BOTTOMRIGHT", GameTooltip, "TOPRIGHT", -TukuiDB:Scale(2), TukuiDB:Scale(5))
-
--- Statusbar background
-local StatusBarBG = CreateFrame("Frame", "StatusBarBG", GameTooltipStatusBar)
-StatusBarBG:SetFrameLevel(GameTooltipStatusBar:GetFrameLevel() - 1)
-StatusBarBG:SetPoint("TOPLEFT", -TukuiDB:Scale(2), TukuiDB:Scale(2))
-StatusBarBG:SetPoint("BOTTOMRIGHT", TukuiDB:Scale(2), -TukuiDB:Scale(2))
-TukuiDB:SetTemplate(StatusBarBG)
-
--- Position default anchor
-local function defaultPosition(tt, parent)
+hooksecurefunc("GameTooltip_SetDefaultAnchor", function(self, parent)
 	if db.cursor == true then
-		tt:ClearAllPoints()
-		tt:SetOwner(parent, "ANCHOR_CURSOR")
+		self:SetOwner(parent, "ANCHOR_CURSOR")
 	else
-		tt:ClearAllPoints()
-		tt:SetOwner(parent, "ANCHOR_NONE")
-		tt:SetPoint("BOTTOMRIGHT", TukuiInfoRight, "TOPRIGHT", 0, TukuiDB:Scale(5))
+		self:SetOwner(parent, "ANCHOR_NONE")
+		self:SetPoint("BOTTOMRIGHT", TukuiInfoRight, "TOPRIGHT", 0, TukuiDB.Scale(5))
 	end
-end
-hooksecurefunc("GameTooltip_SetDefaultAnchor", defaultPosition)
+	self.default = 1
+end)
 
-local function OnUpdate(self, ...)
-	if self:GetAnchorType() == "ANCHOR_NONE" then
+GameTooltip:HookScript("OnUpdate",function(self, ...)
+	if self:GetAnchorType() == "ANCHOR_CURSOR" and NeedBackdropBorderRefresh == true and db.cursor ~= true then
+		-- h4x for world object tooltip border showing last border color 
+		-- or showing background sometime ~blue :x
+		NeedBackdropBorderRefresh = false
+		self:SetBackdropColor(unpack(TukuiCF.media.backdropcolor))
+		self:SetBackdropBorderColor(unpack(TukuiCF.media.bordercolor))
+	elseif self:GetAnchorType() == "ANCHOR_NONE" then
 		if InCombatLockdown() and db.hidecombat == true then
 			self:SetAlpha(0)
 		else
 			self:SetAlpha(1)
-			if TukuiDB["bags"].enable == true and StuffingFrameBags:IsShown() then
+			if TukuiCF["bags"].enable == true and StuffingFrameBags:IsShown() then
 				self:ClearAllPoints()
-				self:SetPoint("BOTTOMRIGHT", StuffingFrameBags, "TOPRIGHT", 0, TukuiDB:Scale(4))
+				self:SetPoint("BOTTOMRIGHT", StuffingFrameBags, "TOPRIGHT", 0, TukuiDB.Scale(4))
 			else
 				self:ClearAllPoints()
-				self:SetPoint("BOTTOMRIGHT", TukuiInfoRight, "TOPRIGHT", 0, TukuiDB:Scale(5))
+				self:SetPoint("BOTTOMRIGHT", TukuiInfoRight, "TOPRIGHT", 0, TukuiDB.Scale(5))
 			end
 		end
 	end
+end)
+
+local function Hex(color)
+	return string.format('|cff%02x%02x%02x', color.r * 255, color.g * 255, color.b * 255)
 end
 
--- Unit tooltip style
-local OnTooltipSetUnit = function(self)
-	local lines = self:NumLines()
-	local _, unit = self:GetUnit()
+local function GetColor(unit)
+	if(UnitIsPlayer(unit) and not UnitHasVehicleUI(unit)) then
+		local _, class = UnitClass(unit)
+		local color = RAID_CLASS_COLORS[class]
+		if not color then return end -- sometime unit too far away return nil for color :(
+		local r,g,b = color.r, color.g, color.b
+		return Hex(color), r, g, b	
+	else
+		local color = FACTION_BAR_COLORS[UnitReaction("player", unit)]
+		if not color then return end -- sometime unit too far away return nil for color :(
+		local r,g,b = color.r, color.g, color.b		
+		return Hex(color), r, g, b		
+	end
+end
 
-	if(not unit or not UnitExists(unit)) then return end
-	if self:GetOwner() ~= UIParent and db.hideuf == true then self:Hide() return end
-	
-	local level = UnitLevel(unit)
-	local levelColor = GetQuestDifficultyColor(level)
-	local race	= UnitRace(unit)
-	local title = UnitPVPName(unit)
-	local unitName, unitRealm = UnitName(unit)
-	local Dead = UnitIsDead(unit)
-	local AFK = UnitIsAFK(unit)
-	local DND = UnitIsDND(unit)
-	local isPlayer = UnitIsPlayer(unit)
-	local r, g, b = GameTooltip_UnitColor(unit)
-	
-	-- display unit name / realm if available / AFK or DND status if available
-	if AFK and isPlayer then Status = " (AFK)" elseif DND and isPlayer then Status = " (DND)" else Status = ""  end
-	_G["GameTooltipTextLeft1"]:SetFormattedText("%s%s%s", title or unitName, unitRealm and unitRealm ~= "" and " - "..unitRealm or "", Status)
+-- function to short-display HP value on StatusBar
+local function ShortValue(value)
+	if value >= 1e7 then
+		return ('%.1fm'):format(value / 1e6):gsub('%.?0+([km])$', '%1')
+	elseif value >= 1e6 then
+		return ('%.2fm'):format(value / 1e6):gsub('%.?0+([km])$', '%1')
+	elseif value >= 1e5 then
+		return ('%.0fk'):format(value / 1e3)
+	elseif value >= 1e3 then
+		return ('%.1fk'):format(value / 1e3):gsub('%.?0+([km])$', '%1')
+	else
+		return value
+	end
+end
 
-	if level == -1 then
-		level = "??"
-		levelColor = { r = 1.00, g = 0.00, b = 0.00 }
+-- update HP value on status bar
+GameTooltipStatusBar:SetScript("OnValueChanged", function(self, value)
+	if not value then
+		return
+	end
+	local min, max = self:GetMinMaxValues()
+	
+	if (value < min) or (value > max) then
+		return
+	end
+	local _, unit = GameTooltip:GetUnit()
+	
+	-- fix target of target returning nil
+	if (not unit) then
+		local GMF = GetMouseFocus()
+		unit = GMF and GMF:GetAttribute("unit")
 	end
 
-	if UnitIsPlayer(unit) then		
-		if GetGuildInfo(unit) then
-			_G["GameTooltipTextLeft2"]:SetFormattedText("<%s>", GetGuildInfo(unit))
+	if not self.text then
+		self.text = self:CreateFontString(nil, "OVERLAY")
+		self.text:SetPoint("CENTER", GameTooltipStatusBar, 0, TukuiDB.Scale(6))
+		self.text:SetFont(TukuiCF["media"].font, 12, "THINOUTLINE")
+		self.text:Show()
+		if unit then
+			min, max = UnitHealth(unit), UnitHealthMax(unit)
+			local hp = ShortValue(min).." / "..ShortValue(max)
+			if UnitIsGhost(unit) then
+				self.text:SetText(tukuilocal.unitframes_ouf_ghost)
+			elseif min == 0 or UnitIsDead(unit) or UnitIsGhost(unit) then
+				self.text:SetText(tukuilocal.unitframes_ouf_dead)
+			else
+				self.text:SetText(hp)
+			end
+		end
+	else
+		if unit then
+			min, max = UnitHealth(unit), UnitHealthMax(unit)
+			self.text:Show()
+			local hp = ShortValue(min).." / "..ShortValue(max)
+			if UnitIsGhost(unit) then
+				self.text:SetText(tukuilocal.unitframes_ouf_ghost)
+			elseif min == 0 or UnitIsDead(unit) or UnitIsGhost(unit) then
+				self.text:SetText(tukuilocal.unitframes_ouf_dead)
+			else
+				self.text:SetText(hp)
+			end
+		else
+			self.text:Hide()
+		end
+	end
+end)
+
+local healthBar = GameTooltipStatusBar
+healthBar:ClearAllPoints()
+healthBar:SetHeight(TukuiDB.Scale(6))
+healthBar:SetPoint("BOTTOMLEFT", healthBar:GetParent(), "TOPLEFT", TukuiDB.Scale(2), TukuiDB.Scale(5))
+healthBar:SetPoint("BOTTOMRIGHT", healthBar:GetParent(), "TOPRIGHT", -TukuiDB.Scale(2), TukuiDB.Scale(5))
+healthBar:SetStatusBarTexture(TukuiCF.media.normTex)
+
+local healthBarBG = CreateFrame("Frame", "StatusBarBG", healthBar)
+healthBarBG:SetFrameLevel(healthBar:GetFrameLevel() - 1)
+healthBarBG:SetPoint("TOPLEFT", -TukuiDB.Scale(2), TukuiDB.Scale(2))
+healthBarBG:SetPoint("BOTTOMRIGHT", TukuiDB.Scale(2), -TukuiDB.Scale(2))
+TukuiDB.SetTemplate(healthBarBG)
+
+GameTooltip:HookScript("OnTooltipSetUnit", function(self)
+	local lines = self:NumLines()
+	local GMF = GetMouseFocus()
+	local unit = (select(2, self:GetUnit())) or (GMF and GMF:GetAttribute("unit"))
+	
+	-- A mage's mirror images sometimes doesn't return a unit, this would fix it
+	if (not unit) and (UnitExists("mouseover")) then
+		unit = "mouseover"
+	end
+	
+	-- Sometimes when you move your mouse quicky over units in the worldframe, we can get here without a unit
+	if not unit then self:Hide() return end
+	
+	-- for hiding tooltip on unitframes
+	if (self:GetOwner() ~= UIParent and db.hideuf) then self:Hide() return end
+	
+	-- A "mouseover" unit is better to have as we can then safely say the tip should no longer show when it becomes invalid.
+	if (UnitIsUnit(unit,"mouseover")) then
+		unit = "mouseover"
+	end
+
+	local race = UnitRace(unit)
+	local class = UnitClass(unit)
+	local level = UnitLevel(unit)
+	local guild = GetGuildInfo(unit)
+	local name, realm = UnitName(unit)
+	local crtype = UnitCreatureType(unit)
+	local classif = UnitClassification(unit)
+	local title = UnitPVPName(unit)
+	local r, g, b = GetQuestDifficultyColor(level).r, GetQuestDifficultyColor(level).g, GetQuestDifficultyColor(level).b
+
+	local color = GetColor(unit)	
+	if not color then color = "|CFFFFFFFF" end -- just safe mode for when GetColor(unit) return nil for unit too far away
+
+	_G["GameTooltipTextLeft1"]:SetFormattedText("%s%s%s", color, title or name, realm and realm ~= "" and " - "..realm.."|r" or "|r")
+
+	if(UnitIsPlayer(unit)) then
+		if UnitIsAFK(unit) then
+			self:AppendText((" %s"):format(CHAT_FLAG_AFK))
+		elseif UnitIsDND(unit) then 
+			self:AppendText((" %s"):format(CHAT_FLAG_DND))
 		end
 
-		local n = GetGuildInfo(unit) and 3 or 2
-		--  thx TipTac for the fix above with color blind enabled
-		if GetCVar("colorblindMode") == "1" then n = n + 1 end
-		_G["GameTooltipTextLeft"..n]:SetFormattedText("|cff%02x%02x%02x%s|r %s", levelColor.r*255, levelColor.g*255, levelColor.b*255, level, race)
+		local offset = 2
+		if guild then
+			_G["GameTooltipTextLeft2"]:SetFormattedText("%s", IsInGuild() and GetGuildInfo("player") == guild and "|cff0090ff"..guild.."|r" or "|cff00ff10"..guild.."|r")
+			offset = offset + 1
+		end
+
+		for i= offset, lines do
+			if(_G["GameTooltipTextLeft"..i]:GetText():find("^"..LEVEL)) then
+				_G["GameTooltipTextLeft"..i]:SetFormattedText("|cff%02x%02x%02x%s|r %s %s%s", r*255, g*255, b*255, level > 0 and level or "??", race, color, class.."|r")
+				break
+			end
+		end
 	else
-		local classification = UnitClassification(unit)
-		local creatureType = UnitCreatureType(unit)
-
-		classification = (classification == "rareelite" and " R+") or
-			(classification == "rare" and " R") or
-			(classification == "elite" and "+") or ""
-
 		for i = 2, lines do
-			local line = _G["GameTooltipTextLeft"..i]
-			if not line or not line:GetText() then return end
-			if (level and line:GetText():find("^"..LEVEL)) or (creatureType and line:GetText():find("^"..creatureType)) then
-				line:SetFormattedText("|cff%02x%02x%02x%s%s|r %s", levelColor.r*255, levelColor.g*255, levelColor.b*255, level, classification, creatureType or "")
+			if((_G["GameTooltipTextLeft"..i]:GetText():find("^"..LEVEL)) or (crtype and _G["GameTooltipTextLeft"..i]:GetText():find("^"..crtype))) then
+				_G["GameTooltipTextLeft"..i]:SetFormattedText("|cff%02x%02x%02x%s|r%s %s", r*255, g*255, b*255, classif ~= "worldboss" and level ~= 0 and level or "", classification[classif] or "", crtype or "")
 				break
 			end
 		end
 	end
 
+	local pvpLine
+	for i = 1, lines do
+		local text = _G["GameTooltipTextLeft"..i]:GetText()
+		if text and text == PVP_ENABLED then
+			pvpLine = _G["GameTooltipTextLeft"..i]
+			pvpLine:SetText()
+			break
+		end
+	end
+
 	-- ToT line
 	if UnitExists(unit.."target") and unit~="player" then
-		local r, g, b = GameTooltip_UnitColor(unit.."target")
+		local hex, r, g, b = GetColor(unit.."target")
+		if not r and not g and not b then r, g, b = 1, 1, 1 end
 		GameTooltip:AddLine(UnitName(unit.."target"), r, g, b)
 	end
 	
-	-- tooltip border color, status bar color & status bar background border color
-	GameTooltip:SetBackdropBorderColor(r, g, b)
-	GameTooltipStatusBar:SetStatusBarColor(r, g, b)
-	StatusBarBG:SetBackdropBorderColor(r, g, b)
-end
-
--- Unit color
-GameTooltip_UnitColor = function(unit)
-	local player = UnitIsPlayer(unit)
-	local reaction = UnitReaction(unit, "player") or 5
-	local tapped = UnitIsTapped(unit)
-	local tappedplayer = UnitIsTappedByPlayer(unit)
-	local connected = UnitIsConnected(unit)
-	local dead = UnitIsDead(unit)
-	local ghost = UnitIsGhost(unit)
-	local r, g, b
-
-	if tapped and not tappedplayer or not connected or dead or ghost then
-		r, g, b = 0.55, 0.57, 0.61
-	elseif player then
-		local _, class = UnitClass(unit)
-		r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
-	elseif reaction then
-		r, g, b = FACTION_BAR_COLORS[reaction].r, FACTION_BAR_COLORS[reaction].g, FACTION_BAR_COLORS[reaction].b
-	else
-		r, g, b = UnitSelectionColor(unit)
-	end
-	
-	return r, g, b
-end
-
--- function to short-display HP value on StatusBar
-local function ShortValue(value)
-        if value >= 1e7 then
-                return ('%.1fm'):format(value / 1e6):gsub('%.?0+([km])$', '%1')
-        elseif value >= 1e6 then
-                return ('%.2fm'):format(value / 1e6):gsub('%.?0+([km])$', '%1')
-        elseif value >= 1e5 then
-                return ('%.0fk'):format(value / 1e3)
-        elseif value >= 1e3 then
-                return ('%.1fk'):format(value / 1e3):gsub('%.?0+([km])$', '%1')
-        else
-                return value
-        end
-end
-
--- update HP value on status bar
-GameTooltipStatusBar:SetScript("OnValueChanged", function(self, value)
-        if not value then
-                return
-        end
-        local min, max = self:GetMinMaxValues()
-        if (value < min) or (value > max) then
-                return
-        end
-		local _, unit = GameTooltip:GetUnit()
-		
-		-- fix target of target returning nil
-		if (not unit) then
-			local ToT = GetMouseFocus()
-			unit = ToT and ToT:GetAttribute("unit")
-		end
-		
-		-- fix mage mirror sometime returning nil
-		if (not unit) and (UnitExists("mouseover")) then
-			unit = "mouseover"
-		end
-
-		if not self.text then
-			self.text = self:CreateFontString(nil, "OVERLAY")
-			self.text:SetPoint("CENTER", GameTooltipStatusBar, 0, TukuiDB:Scale(6))
-			self.text:SetFont(TukuiDB["media"].font, 12, "THINOUTLINE")
-			self.text:Show()
-			if unit then
-				min, max = UnitHealth(unit), UnitHealthMax(unit)
-				local hp = ShortValue(min).." / "..ShortValue(max)
-				self.text:SetText(hp)
-			end
-		else
-			if unit then
-				min, max = UnitHealth(unit), UnitHealthMax(unit)
-				self.text:Show()
-				local hp = ShortValue(min).." / "..ShortValue(max)
-				self.text:SetText(hp)
-			else
-				self.text:Hide()
-			end
-		end
+	-- Sometimes this wasn't getting reset, the fact a cleanup isn't performed at this point, now that it was moved to "OnTooltipCleared" is very bad, so this is a fix
+	self.fadeOut = nil
 end)
 
--- This will clean up border/background color to default when we aren't showing a unit
-local OnTooltipCleared = function(self)
-	self:SetBackdropBorderColor(unpack(TukuiDB["media"].bordercolor))
-	GameTooltipStatusBar:SetStatusBarColor(unpack(TukuiDB["media"].bordercolor))
-	StatusBarBG:SetBackdropBorderColor(unpack(TukuiDB["media"].bordercolor))
-end
-
--- border color according to if unit is player/friendly/hostile and item quality
-local OnShow = function(self)
-	local ToT = GetMouseFocus()
-	local unit = (select(2, self:GetUnit())) or (ToT and ToT:GetAttribute("unit"))
-	local reaction = unit and UnitReaction("player", unit)
-	local isPlayer = unit and UnitIsPlayer(unit)
+local BorderColor = function(self)
+	local GMF = GetMouseFocus()
+	local unit = (select(2, self:GetUnit())) or (GMF and GMF:GetAttribute("unit"))
 		
-	if isPlayer or reaction then
-		local r, g, b = GameTooltip_UnitColor(unit)
+	local reaction = unit and UnitReaction("player", unit)
+	local player = unit and UnitIsPlayer(unit)
+	local tapped = unit and UnitIsTapped(unit)
+	local tappedbyme = unit and UnitIsTappedByPlayer(unit)
+	local connected = unit and UnitIsConnected(unit)
+	local dead = unit and UnitIsDead(unit)
+
+	if player then
+		local class = select(2, UnitClass(unit))
+		if TukuiCF.unitframes.enable == true then
+			local c = TukuiDB.oUF_colors.class[class]
+			r, g, b = c[1], c[2], c[3]
+		else
+			r, g, b = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
+		end
 		self:SetBackdropBorderColor(r, g, b)
-		GameTooltipStatusBar:SetStatusBarColor(r, g, b)
-		StatusBarBG:SetBackdropBorderColor(r, g, b)
+		healthBarBG:SetBackdropBorderColor(r, g, b)
+		healthBar:SetStatusBarColor(r, g, b)
+	elseif reaction then
+		if TukuiCF.unitframes.enable == true then
+			local c = TukuiDB.oUF_colors.reaction[reaction]
+			r, g, b = c[1], c[2], c[3]
+		else
+			r, g, b = FACTION_BAR_COLORS[reaction].r, FACTION_BAR_COLORS[reaction].g, FACTION_BAR_COLORS[reaction].b
+		end
+		self:SetBackdropBorderColor(r, g, b)
+		healthBarBG:SetBackdropBorderColor(r, g, b)
+		healthBar:SetStatusBarColor(r, g, b)
 	else
 		local _, link = self:GetItem()
 		local quality = link and select(3, GetItemInfo(link))
@@ -247,35 +280,42 @@ local OnShow = function(self)
 			local r, g, b = GetItemQualityColor(quality)
 			self:SetBackdropBorderColor(r, g, b)
 		else
-			self:SetBackdropBorderColor(unpack(TukuiDB["media"].bordercolor))
+			self:SetBackdropBorderColor(unpack(TukuiCF["media"].bordercolor))
+			healthBarBG:SetBackdropBorderColor(unpack(TukuiCF["media"].bordercolor))
+			healthBar:SetStatusBarColor(unpack(TukuiCF["media"].bordercolor))
 		end
 	end
+	
+	-- need this
+	NeedBackdropBorderRefresh = true
 end
 
-ItemRefTooltip:HookScript("OnShow", OnShow)
-GameTooltip:HookScript("OnShow", OnShow)
-GameTooltip:HookScript("OnTooltipCleared", OnTooltipCleared)
-GameTooltip:HookScript("OnTooltipSetUnit", OnTooltipSetUnit)
-GameTooltip:HookScript("OnUpdate", OnUpdate)
+local SetStyle = function(self)
+	TukuiDB.SetTemplate(self)
+	BorderColor(self)
+end
 
--- Reskin and reposition battle.net popup
-TukuiDB:SetTemplate(BNToastFrame)
-BNToastFrame:HookScript("OnShow", function(self)
-	self:ClearAllPoints()
-	self:SetPoint("BOTTOMLEFT", TukuiInfoLeft, "TOPLEFT", 0, TukuiDB:Scale(5))
-	self:SetBackdropColor(unpack(TukuiDB["media"].backdropcolor))
-	self:SetBackdropBorderColor(unpack(TukuiDB["media"].bordercolor))
+TukuiTooltip:RegisterEvent("PLAYER_ENTERING_WORLD")
+TukuiTooltip:SetScript("OnEvent", function(self)
+	for _, tt in pairs(Tooltips) do
+		tt:HookScript("OnShow", SetStyle)
+	end
+	
+	TukuiDB.SetTemplate(FriendsTooltip)
+		
+	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	self:SetScript("OnEvent", nil)
+	
+	-- Hide tooltips in combat for actions, pet actions and shapeshift
+	if db.hidebuttons == true then
+		local CombatHideActionButtonsTooltip = function(self)
+			if not IsShiftKeyDown() then
+				self:Hide()
+			end
+		end
+	 
+		hooksecurefunc(GameTooltip, "SetAction", CombatHideActionButtonsTooltip)
+		hooksecurefunc(GameTooltip, "SetPetAction", CombatHideActionButtonsTooltip)
+		hooksecurefunc(GameTooltip, "SetShapeshift", CombatHideActionButtonsTooltip)
+	end
 end)
-
--- Hide tooltips in combat for actions, pet actions and shapeshift
-if db.hidebuttons == true then
-	local CombatHideActionButtonsTooltip = function(self)
-		if not IsShiftKeyDown() then
-			self:Hide()
-		end
-	end
- 
-	hooksecurefunc(GameTooltip, "SetAction", CombatHideActionButtonsTooltip)
-	hooksecurefunc(GameTooltip, "SetPetAction", CombatHideActionButtonsTooltip)
-	hooksecurefunc(GameTooltip, "SetShapeshift", CombatHideActionButtonsTooltip)
-end

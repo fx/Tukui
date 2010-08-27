@@ -1,10 +1,6 @@
 -- credits : Haste
 
-if not TukuiDB["loot"].lootframe == true then return end
-
------------------------------------
--- Credit : Haste
------------------------------------
+if not TukuiCF["loot"].lootframe == true then return end
 
 local L = {
 	fish = "Fishy loot",
@@ -14,7 +10,7 @@ local L = {
 local addon = CreateFrame("Button", "Butsu")
 local title = addon:CreateFontString(nil, "OVERLAY")
 
-local iconSize = 22
+local iconSize = 30
 local frameScale = 1
 
 local sq, ss, sn
@@ -66,9 +62,9 @@ end
 local createSlot = function(id)
 	local iconsize = iconSize-2
 	local frame = CreateFrame("Button", 'ButsuSlot'..id, addon)
-	frame:SetPoint("LEFT", TukuiDB:Scale(8), 0)
-	frame:SetPoint("RIGHT", TukuiDB:Scale(-8), 0)
-	frame:SetHeight(TukuiDB:Scale(iconsize))
+	frame:SetPoint("LEFT", TukuiDB.Scale(8), 0)
+	frame:SetPoint("RIGHT", TukuiDB.Scale(-8), 0)
+	frame:SetHeight(TukuiDB.Scale(iconsize))
 	frame:SetID(id)
 
 	frame:RegisterForClicks("LeftButtonUp", "RightButtonUp")
@@ -79,25 +75,25 @@ local createSlot = function(id)
 	frame:SetScript("OnUpdate", OnUpdate)
 
 	local iconFrame = CreateFrame("Frame", nil, frame)
-	iconFrame:SetHeight(TukuiDB:Scale(iconsize))
-	iconFrame:SetWidth(TukuiDB:Scale(iconsize))
+	iconFrame:SetHeight(TukuiDB.Scale(iconsize))
+	iconFrame:SetWidth(TukuiDB.Scale(iconsize))
 	iconFrame:ClearAllPoints()
 	iconFrame:SetPoint("RIGHT", frame)
 	
-	TukuiDB:SetTemplate(iconFrame)
+	TukuiDB.SetTemplate(iconFrame)
 
 	local icon = iconFrame:CreateTexture(nil, "ARTWORK")
 	icon:SetAlpha(.8)
 	icon:SetTexCoord(.07, .93, .07, .93)
-	icon:SetPoint("TOPLEFT", TukuiDB:Scale(2), TukuiDB:Scale(-2))
-	icon:SetPoint("BOTTOMRIGHT", TukuiDB:Scale(-2), TukuiDB:Scale(2))
+	icon:SetPoint("TOPLEFT", TukuiDB.Scale(2), TukuiDB.Scale(-2))
+	icon:SetPoint("BOTTOMRIGHT", TukuiDB.Scale(-2), TukuiDB.Scale(2))
 	frame.icon = icon
 
 	local count = iconFrame:CreateFontString(nil, "OVERLAY")
 	count:ClearAllPoints()
 	count:SetJustifyH"RIGHT"
-	count:SetPoint("BOTTOMRIGHT", iconFrame, TukuiDB:Scale(-1), TukuiDB:Scale(2))
-	count:SetFont(TukuiDB["media"].uffont, 12, "OUTLINE")
+	count:SetPoint("BOTTOMRIGHT", iconFrame, TukuiDB.Scale(-1), TukuiDB.Scale(2))
+	count:SetFont(TukuiCF["media"].font, 12, "OUTLINE")
 	count:SetShadowOffset(.8, -.8)
 	count:SetShadowColor(0, 0, 0, 1)
 	count:SetText(1)
@@ -109,7 +105,7 @@ local createSlot = function(id)
 	name:SetPoint("LEFT", frame)
 	name:SetPoint("RIGHT", icon, "LEFT")
 	name:SetNonSpaceWrap(true)
-	name:SetFont(TukuiDB["media"].uffont, 13, "OUTLINE")
+	name:SetFont(TukuiCF["media"].font, 13, "OUTLINE")
 	name:SetShadowOffset(.8, -.8)
 	name:SetShadowColor(0, 0, 0, 1)
 	frame.name = name
@@ -136,15 +132,15 @@ local anchorSlots = function(self)
 			shownSlots = shownSlots + 1
 
 			-- We don't have to worry about the previous slots as they're already hidden.
-			frame:SetPoint("TOP", addon, TukuiDB:Scale(4), TukuiDB:Scale((-8 + iconsize) - (shownSlots * iconsize)))
+			frame:SetPoint("TOP", addon, TukuiDB.Scale(4), TukuiDB.Scale((-8 + iconsize) - (shownSlots * iconsize)))
 		end
 	end
 
-	self:SetHeight(TukuiDB:Scale(math.max(shownSlots * iconsize + 16, 20)))
+	self:SetHeight(TukuiDB.Scale(math.max(shownSlots * iconsize + 16, 20)))
 end
 
-title:SetFont(TukuiDB["media"].uffont, 13, "OUTLINE")
-title:SetPoint("BOTTOMLEFT", addon, "TOPLEFT", TukuiDB:Scale(4), TukuiDB:Scale(4))
+title:SetFont(TukuiCF["media"].font, 13, "OUTLINE")
+title:SetPoint("BOTTOMLEFT", addon, "TOPLEFT", TukuiDB.Scale(4), TukuiDB.Scale(4))
 
 addon:SetScript("OnMouseDown", function(self) if(IsAltKeyDown()) then self:StartMoving() end end)
 addon:SetScript("OnMouseUp", function(self) self:StopMovingOrSizing() end)
@@ -157,19 +153,19 @@ addon:RegisterForClicks"anyup"
 
 addon:SetParent(UIParent)
 addon:SetUserPlaced(true)
-addon:SetPoint("TOPLEFT", 0, TukuiDB:Scale(-104))
+addon:SetPoint("TOPLEFT", 0, TukuiDB.Scale(-104))
 addon:SetBackdrop{
-	bgFile = TukuiDB["media"].blank, tile = true, tileSize = TukuiDB:Scale(16),
-	edgeFile = TukuiDB["media"].blank, edgeSize = TukuiDB.mult,
+	bgFile = TukuiCF["media"].blank, tile = true, tileSize = TukuiDB.Scale(16),
+	edgeFile = TukuiCF["media"].blank, edgeSize = TukuiDB.mult,
 	insets = {left = -TukuiDB.mult, right = -TukuiDB.mult, top = -TukuiDB.mult, bottom = -TukuiDB.mult},
 }
-addon:SetWidth(TukuiDB:Scale(256))
-addon:SetHeight(TukuiDB:Scale(64))
+addon:SetWidth(TukuiDB.Scale(256))
+addon:SetHeight(TukuiDB.Scale(64))
 addon:SetBackdropColor(0.1, 0.1, 0.1, 1)
 
 addon:SetClampedToScreen(true)
-addon:SetClampRectInsets(0, 0, TukuiDB:Scale(14), 0)
-addon:SetHitRectInsets(0, 0, TukuiDB:Scale(-14), 0)
+addon:SetClampRectInsets(0, 0, TukuiDB.Scale(14), 0)
+addon:SetHitRectInsets(0, 0, TukuiDB.Scale(-14), 0)
 addon:SetFrameStrata"HIGH"
 addon:SetToplevel(true)
 
@@ -198,7 +194,7 @@ addon.LOOT_OPENED = function(self, event, autoloot)
 		y = y / self:GetEffectiveScale()
 
 		self:ClearAllPoints()
-		self:SetPoint("TOPLEFT", nil, "BOTTOMLEFT", TukuiDB:Scale(x - 40), TukuiDB:Scale(y + 20))
+		self:SetPoint("TOPLEFT", nil, "BOTTOMLEFT", TukuiDB.Scale(x - 40), TukuiDB.Scale(y + 20))
 		self:GetCenter()
 		self:Raise()
 	end
@@ -262,7 +258,7 @@ addon.LOOT_OPENED = function(self, event, autoloot)
 
 	local color = ITEM_QUALITY_COLORS[m]
 	self:SetBackdropBorderColor(color.r, color.g, color.b, .8)
-	self:SetWidth(TukuiDB:Scale(math.max(w, t)))
+	self:SetWidth(TukuiDB.Scale(math.max(w, t)))
 end
 
 addon.LOOT_SLOT_CLEARED = function(self, event, slot)
@@ -332,3 +328,4 @@ end
 StaticPopupDialogs["CONFIRM_LOOT_DISTRIBUTION"].OnAccept = function(self, data)
 	GiveMasterLoot(ss, data)
 end
+

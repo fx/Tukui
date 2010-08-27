@@ -6,11 +6,17 @@ local Update = function(self, event, unit)
 
 	-- Calculate units to work with
 	local realUnit, modUnit = SecureButton_GetUnit(self), SecureButton_GetModifiedUnit(self)
+
+	-- _GetUnit() doesn't rewrite playerpet -> pet like _GetModifiedUnit does.
+	if(realUnit == 'playerpet') then
+		realUnit = 'pet'
+	end
+
 	if(modUnit == "pet" and realUnit ~= "pet") then
 		modUnit = "vehicle"
 	end
 
-	-- Avoid unnecessary changes
+	-- Do not update if this frame is not concerned
 	if(unit ~= modUnit and unit ~= realUnit and unit ~= self.unit) then return end
 	
 	-- Update the frame unit properties
@@ -21,14 +27,8 @@ local Update = function(self, event, unit)
 		self.realUnit = nil
 	end
 
-	-- Update player buff frames
-	if(realUnit == "player") then
-		PlayerFrame.unit = modUnit
-		BuffFrame_Update()
-	end
-
 	-- Refresh the frame
-	return self:PLAYER_ENTERING_WORLD('VehicleSwitch')
+	return self:UpdateAllElements('VehicleSwitch')
 end
 
 local Enable = function(self, unit)

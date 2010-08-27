@@ -1,8 +1,8 @@
-TukuiDB["media"] = {
+TukuiCF["media"] = {
 	-- fonts
-	["font"] = [[fonts\ARIALN.ttf]], -- general font of tukui
+	["font"] = [=[Interface\Addons\Tukui\media\fonts\arial.ttf]=], -- general font of tukui
 	["uffont"] = [[Interface\AddOns\Tukui\media\fonts\uf_font.ttf]], -- general font of unitframes
-	["dmgfont"] = [[fonts\ARIALN.ttf]], -- general font of dmg / sct
+	["dmgfont"] = [[Interface\AddOns\aesyr\CalibriBold.ttf]], -- general font of dmg / sct
 	
 	-- textures
 	["normTex"] = [[Interface\AddOns\Tukui\media\textures\normTex]], -- texture used for tukui healthbar/powerbar/etc

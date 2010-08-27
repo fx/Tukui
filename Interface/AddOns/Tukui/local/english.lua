@@ -1,5 +1,7 @@
 -- localization for enUS and enGB
 
+tukuilocal.disband = "Disbanding group."
+
 tukuilocal.datatext_guild = "Guild"
 tukuilocal.datatext_noguild = "No Guild"
 tukuilocal.datatext_bags = "Bags: "
@@ -12,8 +14,6 @@ tukuilocal.datatext_deficit = "Deficit:"
 tukuilocal.datatext_profit = "Profit:"
 tukuilocal.datatext_wg = "Time to Wintergrasp:"
 tukuilocal.datatext_friendlist = "Friends list:"
-tukuilocal.datatext_inprogress = "In Progress"
-tukuilocal.datatext_unavailable = "Unavailable"
 tukuilocal.datatext_playersp = "sp"
 tukuilocal.datatext_playerap = "ap"
 tukuilocal.datatext_playerhaste = "haste"
@@ -63,6 +63,7 @@ tukuilocal.datatext_graveyardsdefended = "Graveyards Defended:"
 tukuilocal.datatext_demolishersdestroyed = "Demolishers Destroyed:"
 tukuilocal.datatext_gatesdestroyed = "Gates Destroyed:"
 tukuilocal.datatext_totalmemusage = "Total Memory Usage:"
+tukuilocal.datatext_control = "Controlled by:"
 
 tukuilocal.Slots = {
 	[1] = {1, "Head", 1000},
@@ -79,7 +80,7 @@ tukuilocal.Slots = {
 }
 
 tukuilocal.popup_disableui = "Tukui doesn't work for this resolution, do you want to disable Tukui? (Cancel if you want to try another resolution)"
-tukuilocal.popup_install = "First time on Tukui V10.30+ with this Character. You must reload UI to set Action Bars, Variables and Chat Frames."
+tukuilocal.popup_install = "First time on Tukui V11 with this Character. You must reload UI to set Action Bars, Variables and Chat Frames."
 tukuilocal.popup_2raidactive = "2 raid layouts are active, please select a layout."
 
 tukuilocal.merchant_repairnomoney = "You don't have enough money for repair!"
@@ -98,17 +99,14 @@ tukuilocal.unitframes_ouf_ghost = "Ghost"
 tukuilocal.unitframes_ouf_lowmana = "LOW MANA"
 tukuilocal.unitframes_ouf_threattext = "Threat on current target:"
 tukuilocal.unitframes_ouf_offlinedps = "Offline"
-tukuilocal.unitframes_ouf_deaddps = "Dead"
+tukuilocal.unitframes_ouf_deaddps = "|cffff0000[DEAD]|r"
 tukuilocal.unitframes_ouf_ghostheal = "GHOST"
 tukuilocal.unitframes_ouf_deadheal = "DEAD"
 tukuilocal.unitframes_ouf_gohawk = "GO HAWK"
 tukuilocal.unitframes_ouf_goviper = "GO VIPER"
 tukuilocal.unitframes_disconnected = "D/C"
 
-tukuilocal.tooltip_targetyou = "|cffff4444>>TARGETING YOU<<|r"
-
-tukuilocal.priest_wsdebuff = "Weakened Soul"
-tukuilocal.priest_ifbuff = "Inner Fire"
+tukuilocal.tooltip_count = "Count"
 
 tukuilocal.bags_noslots = "can't buy anymore slots!"
 tukuilocal.bags_costs = "Cost: %.2f gold"
@@ -127,31 +125,18 @@ tukuilocal.bags_sortingbags = "Sorting finished."
 tukuilocal.bags_nothingsort= "Nothing to sort."
 tukuilocal.bags_bids = "Using bags: "
 tukuilocal.bags_stackend = "Restacking finished."
+tukuilocal.bags_rightclick_search = "Right-click to search."
 
 tukuilocal.chat_invalidtarget = "Invalid Target"
 
 tukuilocal.mount_wintergrasp = "Wintergrasp"
-
-tukuilocal.playermenu_freeforall = "Free for All"
-tukuilocal.playermenu_group = "|cff1eff00Group Loot|r"
-tukuilocal.playermenu_master = "|cff0070ddMaster Loot|r"
-tukuilocal.playermenu_global_needbeforegreed = "Loot: %sNeed & Greed|r"
-tukuilocal.playermenu_global_freeforall = "Loot: %sFree for All|r"
-tukuilocal.playermenu_global_group = "Loot: %sGroup Loot|r"
-tukuilocal.playermenu_global_master = "Loot: %sMaster Loot|r"
-tukuilocal.playermenu_normal = "5 |cffffff50Normal|r"
-tukuilocal.playermenu_heroic = "5 |cffff5050Heroic|r"
-tukuilocal.playermenu_raid10 = "10 |cffffff50Normal|r"
-tukuilocal.playermenu_raid25 = "25 |cffffff50Normal|r"
-tukuilocal.playermenu_raid10h = "10 |cffff5050Heroic|r"
-tukuilocal.playermenu_raid25h = "25 |cffff5050Heroic|r"
 
 tukuilocal.core_autoinv_enable = "Autoinvite ON: invite"
 tukuilocal.core_autoinv_enable_c = "Autoinvite ON: "
 tukuilocal.core_autoinv_disable = "Autoinvite OFF"
 tukuilocal.core_wf_unlock = "WatchFrame unlock"
 tukuilocal.core_wf_lock = "WatchFrame lock"
-tukuilocal.core_welcome1 = "Welcome on |cffC495DDTukui|r, version "
+tukuilocal.core_welcome1 = "Welcome to |cffC495DDTukui|r, version "
 tukuilocal.core_welcome2 = "Type |cff00FFFF/uihelp|r for more info or visit www.tukui.org"
 
 tukuilocal.core_uihelp1 = "|cff00ff00General Slash Commands|r"
