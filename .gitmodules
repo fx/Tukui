@@ -1,0 +1,3 @@
+[submodule "Interface/AddOns/Tukui_ClassTimer"]
+	path = Interface/AddOns/Tukui_ClassTimer
+	url = git@github.com:fx/Tukui_ClassTimer.git
